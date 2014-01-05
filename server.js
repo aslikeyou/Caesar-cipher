@@ -1,7 +1,6 @@
 var express         = require('express');
 var path            = require('path'); // модуль для парсинга пути
-var request         = require('request');
-var read = require('node-readability');
+var parser          = require('./parser.js');
 var log             = require('./libs/log')(module);
 var app = express();
 
@@ -29,18 +28,14 @@ app.use(function(err, req, res, next){
 app.post('/api/parse', function(req, res, next) {
   var html = req.body.html;
 
-  read(html, function(err, article) {
 
+  parser(html, function(err, article) {
     if(err) {
       next(err);
       return ;
     }
 
-    res.send(JSON.stringify({
-      content : article.content,
-      title : article.title,
-      html : article.html
-    }));
+    res.send(JSON.stringify(article));
   });
 
 });
