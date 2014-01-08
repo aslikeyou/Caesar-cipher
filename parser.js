@@ -10,6 +10,8 @@ module.exports  = function parser(url, callback) {
       return ;
     }
 
+    var originalUrl = response.request.uri.href;
+
     if(response.statusCode !== 200) {
       callback(new Error('Status code for your url is ' + response.statusCode + '. Must be 200!'));
       return ;
@@ -22,7 +24,7 @@ module.exports  = function parser(url, callback) {
         return ;
       }
 
-      
+
       var $ = cheerio.load(article.html);
 
       // check for og facebook type. If exist it must be an article
@@ -45,6 +47,7 @@ module.exports  = function parser(url, callback) {
       parsedObject.content = article.content;//.replace('`','\'');
       parsedObject.title = article.title;
       parsedObject.html = article.html;
+      parsedObject.originalUrl = originalUrl;
 
       callback(null, parsedObject);
     });
