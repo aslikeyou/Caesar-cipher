@@ -4,6 +4,27 @@ var parser          = require('./parser.js');
 var log             = require('./libs/log')(module);
 var app = express();
 
+var nodemailer = require("nodemailer");
+
+// create reusable transport method (opens pool of SMTP connections)
+var smtpTransport = nodemailer.createTransport("SMTP",{
+  service: "Gmail",
+  auth: {
+    user: "aslikeyoubot@gmail.com",
+    pass: "qwe123rt"
+  }
+});
+
+// setup e-mail data with unicode symbols
+var mailOptions = {
+  from: "AsLikeYou Bot Service ✔ <aslikeyoubot@gmail.com>", // sender address
+  to: "omenux@yandex.ru, pekhota.alex@gmail.com", // list of receivers
+  subject: "Error on parseProject ✔"//, // Subject line
+ // text: "Hello world ✔", // plaintext body
+ // html: "<b>Hello world ✔</b>" // html body
+}
+
+
 app.use(express.favicon()); // отдаем стандартную фавиконку, можем здесь же свою задать
 app.use(express.logger('dev')); // выводим все запросы со статусами в консоль
 app.use(express.bodyParser()); // стандартный модуль, для парсинга JSON в запросах
@@ -31,6 +52,18 @@ app.post('/api/parse', function(req, res, next) {
 
   parser(html, function(err, article) {
     if(err) {
+      mailOptions.text = err.message + '|||' + html;
+      smtpTransport.sendMail(mailOptions, function(error, response){
+        if(error){
+          console.log(error);
+        }else{
+          console.log("Message sent: " + response.message);
+        }
+
+        // if you don't want to use this transport object anymore, uncomment following line
+        //smtpTransport.close(); // shut down the connection pool, no more messages
+      });
+
       next(err);
       return ;
     }
