@@ -2,6 +2,9 @@ var express         = require('express');
 var path            = require('path'); // модуль для парсинга пути
 var parser          = require('./parser.js');
 var log             = require('./libs/log')(module);
+
+var summary = require('node-sumuparticles');
+
 var app = express();
 
 var nodemailer = require("nodemailer");
@@ -46,9 +49,24 @@ app.use(function(err, req, res, next){
   return;
 });
 
+
+app.post('/api/summary', function(req, res, next) {
+  var url = req.body.url;
+
+  summary.summarize(url, function(title, summary, failure) {
+    if (failure) {
+      next(failure);
+    }
+
+    res.send(JSON.stringify({
+      title : title,
+      summary : summary
+    }));
+  });
+});
+
 app.post('/api/parse', function(req, res, next) {
   var html = req.body.html;
-
 
   parser(html, function(err, article) {
     if(err) {
@@ -70,7 +88,6 @@ app.post('/api/parse', function(req, res, next) {
 
     res.send(JSON.stringify(article));
   });
-
 });
 
 app.get('/ErrorExample', function(req, res, next){
