@@ -2,6 +2,7 @@ var read = require('node-readability');
 var fs = require('fs');
 var cheerio = require('cheerio');
 var request = require('request');
+var urlLib = require('url');
 
 module.exports  = function parser(url, callback) {
   request(url, function(err, response, html) {
@@ -12,11 +13,6 @@ module.exports  = function parser(url, callback) {
 
     try {
       var originalUrl = response.request.uri.href;
-      var hostName = response.request.uri.protocol + '//' + response.request.uri.host;
-
-      var relativeHostName = function(url) {
-        return url.substring(0,url.lastIndexOf('/'));
-      }(response.request.uri.href);
 
       if(response.statusCode !== 200) {
         callback(new Error('Status code for your url is ' + response.statusCode + '. Must be 200!'));
@@ -46,7 +42,7 @@ module.exports  = function parser(url, callback) {
       return ;
     }
 
-    read(html, function(err, article) {
+    read(url, function(err, article) {
       // if we have read error
       if(err) {
         callback(err);
@@ -76,17 +72,7 @@ module.exports  = function parser(url, callback) {
           }
 
           var resultUrl = function(src) {
-            var r = new RegExp('^(?:[a-z]+:)?//', 'i');
-            // if true link is relative
-            if(!r.test(src)) {
-              if(src.charAt(0) === '/') {
-                return hostName  + src;
-              }
-
-              return relativeHostName + '/' + src;
-            }
-
-            return src;
+            return urlLib.resolve(originalUrl, src);
           }(src);
 
           switch (tagName) {
