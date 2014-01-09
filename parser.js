@@ -42,7 +42,7 @@ module.exports  = function parser(url, callback) {
       return ;
     }
 
-    read(url, function(err, article) {
+    read(html, function(err, article) {
       // if we have read error
       if(err) {
         callback(err);
