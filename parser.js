@@ -76,14 +76,14 @@ module.exports  = function parser(url, callback) {
           }
 
           var resultUrl = function(src) {
-            if(src.indexOf(hostName) === -1) {
-              if(src.substring(0,2) !== '//') {
-                if(src.charAt(0) === '/') {
-                  return hostName  + src;
-                } else {
-                  return relativeHostName + '/' + src;
-                }
+            var r = new RegExp('^(?:[a-z]+:)?//', 'i');
+            // if true link is relative
+            if(!r.test(src)) {
+              if(src.charAt(0) === '/') {
+                return hostName  + src;
               }
+
+              return relativeHostName + '/' + src;
             }
 
             return src;
