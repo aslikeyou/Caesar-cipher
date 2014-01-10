@@ -5,7 +5,7 @@
   "private": true,
   "dependencies": {
     "express": "3.x",
-    "node-readability": "*",
+    "node-readability": "git+https://github.com/aslikeyou/node-readability.git",
     "winston": "~0.7.2",
     "cheerio": "~0.13.1",
     "nodemailer": "~0.6.0",
