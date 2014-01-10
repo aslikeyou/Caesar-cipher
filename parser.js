@@ -11,8 +11,8 @@ module.exports  = function parser(url, callback) {
           return false;
         }
 
-        if(obj.getAttribute('class') === 'BrightcoveExperience') {
-          videoHandler = 'brightcove';
+        if(obj.getAttribute('class') === 'BrightcoveExperience' && obj.getAttribute('id') === 'myExperience') {
+          videoHandler = 'brightcoveRocketscript';
           return true;
         }
 
@@ -57,9 +57,8 @@ module.exports  = function parser(url, callback) {
     if(videoHandler) {
       parsedObject.videoHandler = {
         name : videoHandler,
-        toHead : '<script language="JavaScript" type="text/javascript" src="http://admin.brightcove.com/js/BrightcoveExperiences.js"></script>',
-        toBody : '<script type="text/javascript">brightcove.createExperiences();</script>'
-
+        toHead : '<script language="JavaScript" type="text/rocketscript" data-rocketsrc="http://admin.brightcove.com/js/BrightcoveExperiences.js"></script>',
+        toBody : '<script type="text/rocketscript">brightcove.createExperiences();</script>'
       };
     }
 
