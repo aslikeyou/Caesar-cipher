@@ -1,9 +1,9 @@
 var express         = require('express');
 var path            = require('path'); // модуль для парсинга пути
-var parser          = require('./parser.js');
 var log             = require('./libs/log')(module);
+var natural         = require('natural');
 
-var summary = require('node-sumuparticles');
+//var summary = require('node-sumuparticles');
 
 var app = express();
 
@@ -21,12 +21,11 @@ var smtpTransport = nodemailer.createTransport("SMTP",{
 // setup e-mail data with unicode symbols
 var mailOptions = {
   from: "AsLikeYou Bot Service ✔ <aslikeyoubot@gmail.com>", // sender address
-  to: "omenux@yandex.ru, pekhota.alex@gmail.com", // list of receivers
+  to: "omenux@yandex.ru",//, pekhota.alex@gmail.com", // list of receivers
   subject: "Error on parseProject ✔"//, // Subject line
  // text: "Hello world ✔", // plaintext body
  // html: "<b>Hello world ✔</b>" // html body
-}
-
+};
 
 app.use(express.favicon()); // отдаем стандартную фавиконку, можем здесь же свою задать
 app.use(express.logger('dev')); // выводим все запросы со статусами в консоль
@@ -49,7 +48,7 @@ app.use(function(err, req, res, next){
   return;
 });
 
-
+/*
 app.post('/api/summary', function(req, res, next) {
   var url = req.body.url;
 
@@ -64,24 +63,57 @@ app.post('/api/summary', function(req, res, next) {
     }));
   });
 });
+//*/
+var PARSERS = {
+  "nodeJsNative" : 0,
+  "readabilityApi" : 1,
+  "pythonApi" : 2
+};
+
+var parser = (function(flag) {
+  var parser = null;
+  switch (flag) {
+    case PARSERS.nodeJsNative:
+      parser          = require('./parser.js');
+      break;
+    case PARSERS.readabilityApi:
+      var request         = require('request');
+
+      parser = function(url, callback) {
+        request.get('https://www.readability.com/api/content/v1/parser?token=2245f3991ab4c75cee2f22fd7c5d42bbeae0a6fc&url='+url, function(err, response, body) {
+          if(err) {
+            callback(err);
+          }
+          var body = JSON.parse(body);
+          body.originalUrl = body.url;
+          body.image = body.lead_image_url
+          callback(null, body)
+        });
+      };
+      break;
+  }
+
+  return parser;
+
+})(PARSERS.nodeJsNative);
 
 app.post('/api/parse', function(req, res, next) {
-  var html = req.body.html;
+  var url = req.body.html;
 
-  parser(html, function(err, article) {
+  parser(url, function(err, article) {
     if(err) {
-      mailOptions.text = err.message + '|||' + html;
+      mailOptions.text = err.message + ' ||| ' + html;
       smtpTransport.sendMail(mailOptions, function(error, response){
         if(error){
           console.log(error);
-        }else{
+        } else {
           console.log("Message sent: " + response.message);
         }
 
         // if you don't want to use this transport object anymore, uncomment following line
         //smtpTransport.close(); // shut down the connection pool, no more messages
       });
-
+//*/
       next(err);
       return ;
     }
@@ -89,11 +121,6 @@ app.post('/api/parse', function(req, res, next) {
     res.send(JSON.stringify(article));
   });
 });
-
-app.get('/ErrorExample', function(req, res, next){
-  next(new Error('Random error!'));
-});
-
 
 app.get('/api', function (req, res) {
   res.send('API is running');

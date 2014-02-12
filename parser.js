@@ -4,22 +4,7 @@ var cheerio = require('cheerio');
 
 module.exports  = function parser(url, callback) {
   var videoHandler = false;
-  read(url, {
-    cleanRulers : [
-      function(obj, tag) {
-        if(tag !== 'object') {
-          return false;
-        }
-
-        if(obj.getAttribute('class') === 'BrightcoveExperience' && obj.getAttribute('id') === 'myExperience') {
-          videoHandler = 'brightcoveRocketscript';
-          return true;
-        }
-
-        return false;
-      }
-    ]
-  }, function(err, article, response) {
+  read(url, function(err, article, response) {
     // if we have read error
     if(err) {
       callback(err);
@@ -30,13 +15,6 @@ module.exports  = function parser(url, callback) {
 
     try {
       var $ = cheerio.load(article.html);
-      // check for og facebook type. If exist it must be an article
-      var ogType = $("meta[property='og\\:type']").attr('content');
-
-      if(ogType !== undefined && ogType !== 'article') {
-        callback(new Error('og:type isn`t article'));
-        return;
-      }
 
       var parsedObject = {};
 
@@ -45,6 +23,10 @@ module.exports  = function parser(url, callback) {
       if(ogImage.length !== 0) {
         parsedObject.image = ogImage.attr('content');
       }
+
+      $("meta").each(function() {
+        console.log($(this).attr('content'));
+      });
     } catch (e) {
       callback(e);
       return ;
