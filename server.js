@@ -1,9 +1,6 @@
 var express         = require('express');
 var path            = require('path'); // модуль для парсинга пути
 var log             = require('./libs/log')(module);
-var natural         = require('natural');
-
-//var summary = require('node-sumuparticles');
 
 var app = express();
 
@@ -48,22 +45,6 @@ app.use(function(err, req, res, next){
   return;
 });
 
-/*
-app.post('/api/summary', function(req, res, next) {
-  var url = req.body.url;
-
-  summary.summarize(url, function(title, summary, failure) {
-    if (failure) {
-      next(failure);
-    }
-
-    res.send(JSON.stringify({
-      title : title,
-      summary : summary
-    }));
-  });
-});
-//*/
 var PARSERS = {
   "nodeJsNative" : 0,
   "readabilityApi" : 1,
