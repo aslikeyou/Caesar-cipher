@@ -34,15 +34,15 @@ module.exports  = function parser(url, callback) {
 
     parsedObject.content = article.content;
     parsedObject.title = article.title;
-    parsedObject.html = article.html;
+  //  parsedObject.html = article.html;
     parsedObject.originalUrl = originalUrl;
-    if(videoHandler) {
+ /*   if(videoHandler) {
       parsedObject.videoHandler = {
         name : videoHandler,
         toHead : '<script language="JavaScript" type="text/rocketscript" data-rocketsrc="http://admin.brightcove.com/js/BrightcoveExperiences.js"></script>',
         toBody : '<script type="text/rocketscript">brightcove.createExperiences();</script>'
       };
-    }
+    } */
 
     callback(null, parsedObject);
   });

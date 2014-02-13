@@ -4,6 +4,8 @@ var log             = require('./libs/log')(module);
 
 var app = express();
 
+// lsof -i tcp:80
+
 var nodemailer = require("nodemailer");
 
 // create reusable transport method (opens pool of SMTP connections)
