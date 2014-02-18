@@ -1,0 +1,16 @@
+{
+  "mail" : {
+    "mailOptions" : {
+      "from" : "AsLikeYou Bot Service ✔ <aslikeyoubot@gmail.com>",
+      "to" : "omenux@yandex.ru",
+      "subject" : "Error on parseProject ✔"
+    },
+    "smtpConfig" : {
+      "service": "Gmail",
+      "auth": {
+        "user": "aslikeyoubot@gmail.com",
+        "pass": "qwe123rt"
+      }
+    }
+  }
+}
