@@ -1,56 +1,46 @@
 
 module.exports = function(app) {
-  var helpers = require('./helpers');
+  var data = require('./public/symbols.json');
+  console.log(data);
 
-  var SummaryTool = require('node-summary');
+  var symbols = '';
 
-  var PARSERS = {
-    "nodeJsNative" : 0,
-    "readabilityApi" : 1
-  };
+  for(var k in data) {
+    symbols += data[k];
+  }
 
-  var parser = helpers.getParser(PARSERS.nodeJsNative);
 
-  app.post('/api/parse', function(req, res, next) {
-    var url = req.body.html;
+  function getStrWithKK(text, kkVal, inc) {
+    var newString = '';
 
-    parser(url, function(err, article) {
-      if(err) {
-        helpers.handleErrorViaMail(err.message + ' ||| ' + html, function(err, t) {
-          if(error){
-            console.log(error);
-            return ;
-          }
-
-          console.log("Message sent: " + response.message);
-        });
-        next(err);
-        return ;
+    for(var i = 0, n = text.length; i<n; i++) {
+      if(inc) {
+        var y = (symbols.indexOf(text[i]) + kkVal % symbols.length) % symbols.length;
+        newString = newString + (symbols[y]);
+      } else {
+        var x = (symbols.indexOf(text[i]) - kkVal % symbols.length + symbols.length) % symbols.length;
+        console.log(x);
+        newString = newString + (symbols[x]);
       }
+    }
+    return newString;
+  }
 
-      res.send(JSON.stringify(article));
-    });
+  function handleData(req, res, flag) {
+    var message = req.body.message;
+    var key = parseInt(req.body.key);
+
+    res.send(JSON.stringify({
+      result : getStrWithKK(message, key, flag)
+    })); //*/
+  }
+
+  app.post('/api/encrypt', function(req, res) {
+    handleData(req, res, true);
   });
 
-  app.post('/api/summary', function(req, res, next) {
-    var title = req.body.title;
-    var content = req.body.content;
-
-    // here we have text without html tags
-    content = content.replace(/(<([^>]+)>)/ig, "").trim().replace(/ +(?= )/g,'');
-
-    SummaryTool.summarize(title, content, function(err, summary) {
-      if(err) {
-        next(err)
-      }
-
-      res.send(JSON.stringify({
-        summary : summary,
-        originalLength : title.length + content.length,
-        length: summary.length,
-        ratio : (100 - (100 * (summary.length / (title.length + content.length))))
-      }));
-    });
+  app.post('/api/decrypt', function(req, res) {
+    handleData(req, res, false);
   });
 
   app.get('/api', function (req, res) {

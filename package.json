@@ -1,22 +1,12 @@
 {
-  "name": "parseProject",
+  "name": "Caesar-cipher",
   "description": "Rest api service for handling articles",
-  "version": "0.0.3",
-  "private": true,
+  "version": "0.0.1",
   "dependencies": {
     "express": "3.x",
-    "node-readability": "git+https://github.com/aslikeyou/node-readability.git",
-    "winston": "~0.7.2",
-    "cheerio": "~0.13.1",
-    "nodemailer": "~0.6.0",
-    "node-sumuparticles": "0.0.4",
-    "node-summary": "~1.0.0"
+    "winston": "~0.7.2"
   },
   "devDependencies": {
-    "nodemon": "~1.0.7",
-    "should": "~3.1.2"
-  },
-  "scripts" : {
-    "test" : "mocha -R spec"
+    "nodemon": "~1.0.7"
   }
 }
