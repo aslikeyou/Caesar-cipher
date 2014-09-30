@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lab 1 - Caesar cipher</title>
+
+    <!-- Bootstrap -->
+    <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        #progress_bar {
+            margin: 10px 0;
+            padding: 3px;
+            border: 1px solid #000;
+            font-size: 14px;
+            clear: both;
+            opacity: 0;
+            -moz-transition: opacity 1s linear;
+            -o-transition: opacity 1s linear;
+            -webkit-transition: opacity 1s linear;
+        }
+        #progress_bar.loading {
+            opacity: 1.0;
+        }
+        #progress_bar .percent {
+            background-color: #99ccff;
+            height: auto;
+            width: 0;
+        }
+    </style>
+    <style type="text/css">
+        #copy.zeroclipboard-is-hover { background-color: #eee; }
+        #zeroclipboard-is-active { background-color: #aaa; }
+    </style>
+</head>
+<body>
+<div class="container" style="padding-top: 10px">
+    <div class="row" style="margin-bottom: 10px">
+        <div class="col-xs-2">
+            <h4>Enter your text:</h4>
+        </div>
+        <div class="col-xs-4">
+            <textarea id="kk" class="form-control" rows="4">Безмесячная ночь дышала негой кроткой.
+Усталый я лежал на скошенной траве.
+Мне снилась девушка с ленивою походкой,
+С венком из васильков на юной голове.</textarea>
+        </div>
+
+    </div>
+    <div class="row" >
+        <div class="col-md-6">
+                <textarea id="inputBox" style="width: 100%" class="form-control" rows="3" placeholder="Enter the text to encrypt"></textarea>
+            <br>
+            <div id="wrongSymbols" class="alert alert-danger" style="display: none">
+
+            </div>
+            <label>
+                Or select some text file: <br>
+                <input type="file" id="files" name="files" />
+                <br>
+                <button  class="btn btn-default btn-sm" onclick="abortRead();">Cancel read</button>
+                <button  class="btn btn-default btn-sm" onclick="clearFile()">Clear file</button>
+                <div id="progress_bar"><div class="percent">0%</div></div>
+            </label>
+            <p id="fileDanger" class="bg-danger" style="display: none">Your browser isn't support files api</p>
+        </div>
+        <div class="col-md-6">
+                    <textarea id="outputBox" class="form-control" rows="3" disabled placeholder="Here will be encrypted text"></textarea>
+        </div>
+        <div class="col-md-3">
+            <br>
+            <button data-type="1" class="btn btn-default btn-sm handleText">Encrypt</button>
+            <button data-type="0"  class="btn btn-default btn-sm handleText">Decrypt</button>
+            <button id="copy" class="btn btn-default btn-sm">Copy result</button>
+        </div>
+    </div>
+</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/bower_components/zeroclipboard/ZeroClipboard.min.js"></script>
+<script>
+    // main form elements
+    var input = $('#inputBox');
+    var output = $('#outputBox');
+    var kk = $('#kk');
+    var fileButton = $('#files');
+    var progress = $('.percent');
+    var decodeBody = $('#decodeBody');
+
+    if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
+        fileButton.prop('disabled', true);
+        $('#fileDanger').show();
+    }
+
+    ZeroClipboard.config( { moviePath: '/bower_components/zeroclipboard/ZeroClipboard.swf' } );
+
+    var client = new ZeroClipboard( $('#copy') );
+
+
+    function clearFile() {
+        fileButton.replaceWith( fileButton = fileButton.clone( true ) );
+    }
+
+    client.on( 'load', function(client) {
+        // alert( "movie is loaded" );
+
+        client.on( 'datarequested', function(client) {
+            client.setText(output.val());
+        } );
+
+        client.on( 'complete', function(client, args) {
+            alert("Text copied to clipboard");//: " + args.text );
+        } );
+    } );
+
+    client.on( 'wrongflash noflash', function() {
+        ZeroClipboard.destroy();
+    } );
+
+    /*
+    kk.click(function() {
+        input.val('');
+        output.val('');
+        fileButton.val('');
+        decodeBody.html('');
+    });*/
+
+    var symbols = '';
+
+    $.getJSON('/symbols.json', function(data) {
+        $.each( data, function( key, val ) {
+            console.log(key + ' symbols loaded.');
+            symbols += val;
+        });
+        console.log('Symbols successful loaded')
+    });
+
+    function getStrWithKK(text, kkVal, inc, callback) {
+        // encrypt
+        var url = 'http://localhost:1337/api/' + (inc ? 'encrypt' : 'decrypt');
+
+        var request = $.ajax({
+            url : url,
+            type: "POST",
+            crossDomain: true,
+            dataType: "json",
+            data : { message: text, key: kkVal, cipher : 'literaryCompositionCipher' },
+            success: function(data) {
+                callback(null, data);
+            }
+        });
+    }
+
+    $('.handleText').on( 'click', function() {
+        var flag = $(this).data('type') === 1;
+        var wrongSymbols = [];
+
+        var inputStr = input.val();
+        for(var j = 0; j< inputStr.length; j++) {
+            if(symbols.indexOf(inputStr.charAt(j)) === -1)
+            {
+                if(wrongSymbols.indexOf(inputStr.charAt(j)) === -1) {
+                    wrongSymbols.push(inputStr.charAt(j));
+                }
+            }
+        }
+
+        if(kk.val().length < 1) {
+            $('#wrongSymbols').show();
+            $('#wrongSymbols').html('You must enter the key!');
+            return ;
+        }
+
+        if(inputStr.length > 0) {
+            if(wrongSymbols.length > 0) {
+                $('#wrongSymbols').show();
+                $('#wrongSymbols').html('You entered wrong symbols: ' + wrongSymbols.join(','));
+                return ;
+            } else {
+                $('#wrongSymbols').html('');
+                $('#wrongSymbols').hide();
+            }
+        } else {
+            $('#wrongSymbols').html('');
+            $('#wrongSymbols').hide();
+        }
+
+        getStrWithKK(input.val(), kk.val(), flag, function(err, data) {
+            if(err) {
+                alert('Error with server');
+                return ;
+            }
+
+            output.val(data.result);
+        });
+    });
+
+
+    var reader;
+
+    function abortRead() {
+        reader.abort();
+    }
+
+    function errorHandler(evt) {
+        switch(evt.target.error.code) {
+            case evt.target.error.NOT_FOUND_ERR:
+                alert('File Not Found!');
+                break;
+            case evt.target.error.NOT_READABLE_ERR:
+                alert('File is not readable');
+                break;
+            case evt.target.error.ABORT_ERR:
+                break; // noop
+            default:
+                alert('An error occurred reading this file.');
+        }
+    }
+
+    function updateProgress(evt) {
+        // evt is an ProgressEvent.
+        if (evt.lengthComputable) {
+            var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
+            // Increase the progress bar length.
+            if (percentLoaded < 100) {
+                progress.width(percentLoaded + '%');
+                progress.text(percentLoaded + '%');
+                //progress.style.width = percentLoaded + '%';
+                //progress.textContent = percentLoaded + '%';
+            }
+        }
+    }
+
+    function handleFileSelect(evt) {
+        // Reset progress indicator on new file selection.
+        progress.width('0%');
+        progress.text('0%');
+
+        reader = new FileReader();
+        reader.onerror = errorHandler;
+        reader.onprogress = updateProgress;
+        reader.onabort = function(e) {
+            alert('File read cancelled');
+        };
+        reader.onloadstart = function(e) {
+            $('#progress_bar').addClass('loading');
+            //document.getElementById('progress_bar').className = 'loading';
+        };
+        reader.onload = function(e) {
+            // Ensure that the progress bar displays 100% at the end.
+            progress.width('100%');
+            progress.text('100%');
+            setTimeout(function() {
+                $('#progress_bar').removeClass('loading');
+                //"document.getElementById('progress_bar').className='';"
+            }, 2000);
+        };
+
+        reader.onloadend = function(evt) {
+            if (evt.target.readyState == FileReader.DONE) { // DONE == 2
+                var text = evt.target.result;
+                input.val(text);
+                input.trigger('keyup');
+            }
+        };
+
+        // Read in the image file as a binary string.
+        reader.readAsText(evt.target.files[0]);
+    }
+
+    fileButton.change(handleFileSelect);
+</script>
+</body>
+</html>

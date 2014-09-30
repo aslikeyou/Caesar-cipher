@@ -1,0 +1,5 @@
+C:\Users\Dmitry\Desktop\Crypto\Cryptography\bin\Debug\Cryptography.dll
+C:\Users\Dmitry\Desktop\Crypto\Cryptography\bin\Debug\Cryptography.pdb
+C:\Users\Dmitry\Desktop\Crypto\Cryptography\obj\Debug\Cryptography.csprojResolveAssemblyReference.cache
+C:\Users\Dmitry\Desktop\Crypto\Cryptography\obj\Debug\Cryptography.dll
+C:\Users\Dmitry\Desktop\Crypto\Cryptography\obj\Debug\Cryptography.pdb

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Lab 1</title>
+    <title>Lab 1 - Caesar cipher</title>
 
     <!-- Bootstrap -->
     <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -60,6 +60,7 @@
                 <input type="file" id="files" name="files" />
                 <br>
                 <button  class="btn btn-default btn-sm" onclick="abortRead();">Cancel read</button>
+                <button  class="btn btn-default btn-sm" onclick="clearFile()">Clear file</button>
                 <div id="progress_bar"><div class="percent">0%</div></div>
             </label>
             <p id="fileDanger" class="bg-danger" style="display: none">Your browser isn't support files api</p>
@@ -97,6 +98,11 @@
     ZeroClipboard.config( { moviePath: '/bower_components/zeroclipboard/ZeroClipboard.swf' } );
 
     var client = new ZeroClipboard( $('#copy') );
+
+
+    function clearFile() {
+        fileButton.replaceWith( fileButton = fileButton.clone( true ) );
+    }
 
     client.on( 'load', function(client) {
         // alert( "movie is loaded" );
@@ -141,14 +147,14 @@
             type: "POST",
             crossDomain: true,
             dataType: "json",
-            data : { message: text, key: kkVal },
+            data : { message: text, key: kkVal, cipher : 'caesar' },
             success: function(data) {
                 callback(null, data);
             }
         });
     }
 
-    $('.handleText').click(function() {
+    $('.handleText').on( 'click', function() {
         var flag = $(this).data('type') === 1;
         var wrongSymbols = [];
 

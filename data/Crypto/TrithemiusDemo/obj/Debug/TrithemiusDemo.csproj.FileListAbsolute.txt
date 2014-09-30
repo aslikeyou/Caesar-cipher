@@ -1,0 +1,9 @@
+C:\Users\Dmitry\Desktop\Crypto\TrithemiusDemo\bin\Debug\TrithemiusDemo.exe.config
+C:\Users\Dmitry\Desktop\Crypto\TrithemiusDemo\bin\Debug\TrithemiusDemo.exe
+C:\Users\Dmitry\Desktop\Crypto\TrithemiusDemo\bin\Debug\TrithemiusDemo.pdb
+C:\Users\Dmitry\Desktop\Crypto\TrithemiusDemo\obj\Debug\TrithemiusDemo.csprojResolveAssemblyReference.cache
+C:\Users\Dmitry\Desktop\Crypto\TrithemiusDemo\obj\Debug\TrithemiusDemo.Form1.resources
+C:\Users\Dmitry\Desktop\Crypto\TrithemiusDemo\obj\Debug\TrithemiusDemo.Properties.Resources.resources
+C:\Users\Dmitry\Desktop\Crypto\TrithemiusDemo\obj\Debug\TrithemiusDemo.csproj.GenerateResource.Cache
+C:\Users\Dmitry\Desktop\Crypto\TrithemiusDemo\obj\Debug\TrithemiusDemo.exe
+C:\Users\Dmitry\Desktop\Crypto\TrithemiusDemo\obj\Debug\TrithemiusDemo.pdb

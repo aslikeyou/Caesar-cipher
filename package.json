@@ -4,9 +4,15 @@
   "version": "0.0.1",
   "dependencies": {
     "express": "3.x",
-    "winston": "~0.7.2"
+    "seedrandom": "^2.3.4",
+    "winston": "~0.7.2",
+    "mocha": ""
   },
   "devDependencies": {
-    "nodemon": "~1.0.7"
+    "nodemon": "~1.0.7",
+    "should": "^3.3.1"
+  },
+  "scripts": {
+    "test": "mocha -R spec"
   }
 }

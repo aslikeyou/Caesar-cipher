@@ -1,0 +1,9 @@
+C:\Users\Dmitry\Desktop\Crypto\DESDemo\bin\Debug\DESDemo.exe.config
+C:\Users\Dmitry\Desktop\Crypto\DESDemo\bin\Debug\DESDemo.exe
+C:\Users\Dmitry\Desktop\Crypto\DESDemo\bin\Debug\DESDemo.pdb
+C:\Users\Dmitry\Desktop\Crypto\DESDemo\obj\Debug\DESDemo.csprojResolveAssemblyReference.cache
+C:\Users\Dmitry\Desktop\Crypto\DESDemo\obj\Debug\DESDemo.Form1.resources
+C:\Users\Dmitry\Desktop\Crypto\DESDemo\obj\Debug\DESDemo.Properties.Resources.resources
+C:\Users\Dmitry\Desktop\Crypto\DESDemo\obj\Debug\DESDemo.csproj.GenerateResource.Cache
+C:\Users\Dmitry\Desktop\Crypto\DESDemo\obj\Debug\DESDemo.exe
+C:\Users\Dmitry\Desktop\Crypto\DESDemo\obj\Debug\DESDemo.pdb

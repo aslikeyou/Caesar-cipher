@@ -1,49 +1,55 @@
+module.exports = function (app) {
+    var symbols = require('./libs/symbols')('./../public/symbols.json').allSymbols;
+    var ciphers = require('./libs/ciphers')(symbols);
 
-module.exports = function(app) {
-  var data = require('./public/symbols.json');
-  console.log(data);
+    function handleData(req, res, flag) {
+        var message = req.body.message;
+        var cipher = req.body.cipher;
+        var result = '';
 
-  var symbols = '';
+        switch (cipher) {
+            case 'caesar' :
+                var key = parseInt(req.body.key);
+                result = ciphers.caesarCipher(message, key, flag);
+                break;
+            case 'trithemius' :
+                var method = req.body.mode;
+                var params = req.body.params;
+                console.log(params);
+                result = ciphers.trithemiusCipher(message, method, params, flag);
+                break;
+            case 'xor':
+                var seed = req.body.seed;
+                result = ciphers.xorCipher(message, seed, flag);
+                break;
+            case 'des':
+                var key = req.body.key;
+                result = ciphers.desCipher(message, key, flag);
+                console.log(result);
+                break;
+            case 'literaryCompositionCipher':
+                var key = req.body.key;
+                result = ciphers.literaryCompositionCipher(message, key, flag);
+                console.log(result);
+                break;
+            default :
+                result = 'You select wrong cipher!!!';
+        }
 
-  for(var k in data) {
-    symbols += data[k];
-  }
-
-
-  function getStrWithKK(text, kkVal, inc) {
-    var newString = '';
-
-    for(var i = 0, n = text.length; i<n; i++) {
-      if(inc) {
-        var y = (symbols.indexOf(text[i]) + kkVal % symbols.length) % symbols.length;
-        newString = newString + (symbols[y]);
-      } else {
-        var x = (symbols.indexOf(text[i]) - kkVal % symbols.length + symbols.length) % symbols.length;
-        console.log(x);
-        newString = newString + (symbols[x]);
-      }
+        res.send(JSON.stringify({
+            result: result
+        })); //*/
     }
-    return newString;
-  }
 
-  function handleData(req, res, flag) {
-    var message = req.body.message;
-    var key = parseInt(req.body.key);
+    app.post('/api/encrypt', function (req, res) {
+        handleData(req, res, true);
+    });
 
-    res.send(JSON.stringify({
-      result : getStrWithKK(message, key, flag)
-    })); //*/
-  }
+    app.post('/api/decrypt', function (req, res) {
+        handleData(req, res, false);
+    });
 
-  app.post('/api/encrypt', function(req, res) {
-    handleData(req, res, true);
-  });
-
-  app.post('/api/decrypt', function(req, res) {
-    handleData(req, res, false);
-  });
-
-  app.get('/api', function (req, res) {
-    res.send('API is running');
-  });
+    app.get('/api', function (req, res) {
+        res.send('API is running');
+    });
 };

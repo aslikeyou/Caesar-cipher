@@ -1,0 +1,9 @@
+C:\Users\Dmitry\Desktop\Crypto\Lab3\bin\Debug\Lab3.exe.config
+C:\Users\Dmitry\Desktop\Crypto\Lab3\bin\Debug\Lab3.exe
+C:\Users\Dmitry\Desktop\Crypto\Lab3\bin\Debug\Lab3.pdb
+C:\Users\Dmitry\Desktop\Crypto\Lab3\obj\Debug\Lab3.csprojResolveAssemblyReference.cache
+C:\Users\Dmitry\Desktop\Crypto\Lab3\obj\Debug\Lab3.Form1.resources
+C:\Users\Dmitry\Desktop\Crypto\Lab3\obj\Debug\Lab3.Properties.Resources.resources
+C:\Users\Dmitry\Desktop\Crypto\Lab3\obj\Debug\Lab3.csproj.GenerateResource.Cache
+C:\Users\Dmitry\Desktop\Crypto\Lab3\obj\Debug\Lab3.exe
+C:\Users\Dmitry\Desktop\Crypto\Lab3\obj\Debug\Lab3.pdb
